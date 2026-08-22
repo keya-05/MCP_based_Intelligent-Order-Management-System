@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: pizza-shop-agent
+    runtime: python
+    rootDir: pizza_broker_be
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn shop_agent:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
