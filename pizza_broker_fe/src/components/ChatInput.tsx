@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 
 interface ChatInputProps {
   value: string;
@@ -7,8 +7,28 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
+const MAX_VISIBLE_ROWS = 5;
+
 export function ChatInput({ value, onChange, onSend, disabled }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const style = window.getComputedStyle(el);
+    const maxHeight =
+      parseFloat(style.lineHeight) * MAX_VISIBLE_ROWS +
+      parseFloat(style.paddingTop) +
+      parseFloat(style.paddingBottom) +
+      parseFloat(style.borderTopWidth) +
+      parseFloat(style.borderBottomWidth);
+
+    el.style.height = "auto";
+    const contentHeight = el.scrollHeight;
+    el.style.height = `${Math.min(contentHeight, maxHeight)}px`;
+    el.style.overflowY = contentHeight > maxHeight ? "auto" : "hidden";
+  }, [value]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -27,7 +47,7 @@ export function ChatInput({ value, onChange, onSend, disabled }: ChatInputProps)
         disabled={disabled}
         placeholder="Ask about a pizza's price…"
         rows={1}
-        className="max-h-32 flex-1 resize-none rounded-2xl border border-crust-200 bg-white px-4 py-2.5 text-sm text-crust-800 placeholder:text-crust-400 focus:border-tomato-400 focus:outline-none focus:ring-2 focus:ring-tomato-100 disabled:opacity-60 dark:border-crust-700 dark:bg-crust-800 dark:text-crust-100 dark:placeholder:text-crust-500 dark:focus:ring-tomato-900"
+        className="flex-1 resize-none overflow-y-hidden rounded-2xl border border-crust-200 bg-white px-4 py-2.5 text-sm text-crust-800 placeholder:text-crust-400 focus:border-tomato-400 focus:outline-none focus:ring-2 focus:ring-tomato-100 disabled:opacity-60 dark:border-crust-700 dark:bg-crust-800 dark:text-crust-100 dark:placeholder:text-crust-500 dark:focus:ring-tomato-900"
       />
       <button
         type="button"

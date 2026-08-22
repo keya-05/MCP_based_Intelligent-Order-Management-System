@@ -5,3 +5,5 @@ httpx
 fastmcp
 pydantic
 mysql-connector-python
+slowapi
+google-genai

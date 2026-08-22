@@ -10,6 +10,15 @@ export class ApiError extends Error {
   }
 }
 
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/health`);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function askShopAgent(content: string): Promise<string> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -25,7 +34,11 @@ export async function askShopAgent(content: string): Promise<string> {
     });
 
     if (!res.ok) {
-      throw new ApiError(`Shop agent responded with status ${res.status}`);
+      console.error(`askShopAgent: backend responded with status ${res.status}`);
+      if (res.status === 429) {
+        throw new ApiError("You're sending messages a little fast — please wait a moment and try again.");
+      }
+      throw new ApiError("Something went wrong on our end. Please try again in a moment.");
     }
 
     const data: AgentResponse = await res.json();
@@ -35,8 +48,9 @@ export async function askShopAgent(content: string): Promise<string> {
     if (err instanceof DOMException && err.name === "AbortError") {
       throw new ApiError("The kitchen is taking too long to reply. Please try again.", err);
     }
+    console.error("askShopAgent: network error", err);
     throw new ApiError(
-      "Couldn't reach the shop agent. Is the backend running on port 8000?",
+      "Sorry, I couldn't reach PizzaBot right now. Please try again in a moment.",
       err
     );
   } finally {

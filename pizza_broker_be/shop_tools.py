@@ -21,6 +21,7 @@ def get_db_connection():
     return mysql.connector.connect(**db_config)
 
 def get_menu_items():
+    """Return the list of pizza names currently on the shop's menu, lowercased."""
     conn= None
     cur=None
     try: 
@@ -38,6 +39,7 @@ def get_menu_items():
         if conn: conn.close()
 
 def check_price_logic(pizza_name: str) -> str:
+    """Look up the price of a specific pizza on the menu by exact name."""
     conn = None
     cur = None
     try:

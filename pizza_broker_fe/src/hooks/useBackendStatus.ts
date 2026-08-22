@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { askShopAgent } from "../lib/api";
+import { checkHealth } from "../lib/api";
 
 export type BackendStatus = "checking" | "online" | "offline";
 
@@ -12,12 +12,8 @@ export function useBackendStatus() {
     let cancelled = false;
 
     const ping = async () => {
-      try {
-        await askShopAgent("__ping__");
-        if (!cancelled) setStatus("online");
-      } catch {
-        if (!cancelled) setStatus("offline");
-      }
+      const ok = await checkHealth();
+      if (!cancelled) setStatus(ok ? "online" : "offline");
     };
 
     ping();

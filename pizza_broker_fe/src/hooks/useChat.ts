@@ -13,7 +13,7 @@ const WELCOME_MESSAGE: ChatMessage = {
 
 function loadHistory(): ChatMessage[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return [WELCOME_MESSAGE];
     const parsed = JSON.parse(raw) as ChatMessage[];
     return parsed.length ? parsed : [WELCOME_MESSAGE];
@@ -27,7 +27,7 @@ export function useChat() {
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
 
   const sendMessage = useCallback(async (text: string) => {
