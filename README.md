@@ -2,6 +2,8 @@
 
 This System is a full-stack AI agent application designed to handle customer enquiries for a pizza shop. Unlike standard ordering forms, it uses an intelligent agent architecture to understand user intent ("What is the price of...") and dynamically fetches real-time data from a MySQL database.
 
+Project link:  https://pizzabroker.netlify.app/
+
 
 ## 🏗️ Architecture & Workflow
 
